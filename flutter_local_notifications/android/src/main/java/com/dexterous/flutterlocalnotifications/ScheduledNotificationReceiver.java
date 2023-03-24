@@ -9,6 +9,7 @@ import androidx.annotation.Keep;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.dexterous.flutterlocalnotifications.models.NotificationDetails;
+import com.dexterous.flutterlocalnotifications.models.ScheduleMode;
 import com.dexterous.flutterlocalnotifications.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -45,9 +46,7 @@ public class ScheduledNotificationReceiver extends BroadcastReceiver {
             }.getType();
             NotificationDetails notificationDetails = gson.fromJson(notificationDetailsJson, type);
             if (notificationDetails.scheduleMode == null) {
-                Log.i("noticrash", "rescheduleNotifications: " + notificationDetails.scheduleMode);
                 notificationDetails.scheduleMode = ScheduleMode.exactAllowWhileIdle;
-                Log.i("noticrash", "rescheduleNotifications: " + notificationDetails.scheduleMode);
             }
             FlutterLocalNotificationsPlugin.showNotification(context, notificationDetails);
             FlutterLocalNotificationsPlugin.scheduleNextNotification(context, notificationDetails);

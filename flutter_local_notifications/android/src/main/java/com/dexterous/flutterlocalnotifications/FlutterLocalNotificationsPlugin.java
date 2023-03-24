@@ -188,9 +188,7 @@ public class FlutterLocalNotificationsPlugin
         ArrayList<NotificationDetails> scheduledNotifications = loadScheduledNotifications(context);
         for (NotificationDetails notificationDetails : scheduledNotifications) {
             if (notificationDetails.scheduleMode == null) {
-                Log.i("noticrash", "rescheduleNotifications: " + notificationDetails.scheduleMode);
                 notificationDetails.scheduleMode = ScheduleMode.exactAllowWhileIdle;
-                Log.i("noticrash", "rescheduleNotifications: " + notificationDetails.scheduleMode);
             }
             try {
                 if (notificationDetails.repeatInterval != null) {
@@ -634,7 +632,9 @@ public class FlutterLocalNotificationsPlugin
         notificationIntent.putExtra(NOTIFICATION_DETAILS, notificationDetailsJson);
         PendingIntent pendingIntent = getBroadcastPendingIntent(context, notificationDetails.id, notificationIntent);
         AlarmManager alarmManager = getAlarmManager(context);
-
+        if (notificationDetails.scheduleMode == null) {
+            notificationDetails.scheduleMode = ScheduleMode.exactAllowWhileIdle;
+        }
         if (notificationDetails.scheduleMode.useAllowWhileIdle()) {
             setupAllowWhileIdleAlarm(
                     notificationDetails, alarmManager, notificationTriggerTime, pendingIntent);
@@ -653,6 +653,9 @@ public class FlutterLocalNotificationsPlugin
             AlarmManager alarmManager,
             long epochMilli,
             PendingIntent pendingIntent) {
+        if (notificationDetails.scheduleMode == null) {
+            notificationDetails.scheduleMode = ScheduleMode.exactAllowWhileIdle;
+        }
         if (notificationDetails.scheduleMode.useAllowWhileIdle()) {
             setupAllowWhileIdleAlarm(notificationDetails, alarmManager, epochMilli, pendingIntent);
         } else {
