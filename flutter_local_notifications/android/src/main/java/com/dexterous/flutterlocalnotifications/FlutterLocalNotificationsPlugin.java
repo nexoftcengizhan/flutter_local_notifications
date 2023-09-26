@@ -116,6 +116,8 @@ public class FlutterLocalNotificationsPlugin
 
     static final String PAYLOAD = "payload";
     static final String NOTIFICATION_ID = "notificationId";
+    static final String CHANNEL_ID = "channelId";
+    static final String CHANNEL_NAME = "channelName";
     static final String CANCEL_NOTIFICATION = "cancelNotification";
     private static final String SHARED_PREFERENCES_KEY = "notification_plugin_cache";
     private static final String DISPATCHER_HANDLE = "dispatcher_handle";
@@ -1102,9 +1104,26 @@ public class FlutterLocalNotificationsPlugin
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationChannelDetails.importance == null) {
-                notificationChannelDetails.importance = 5;
+            // Start - Controls to check if info are missing from Flutter side
+            if (details.importance == null) {
+                details.importance = 5;
             }
+            SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY,
+                    Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            String defaultChannelId = sharedPreferences.getString(CHANNEL_ID, "high_importance_channel");
+            String defaultChannelName = sharedPreferences.getString(CHANNEL_NAME, "High Importance Channel");
+            if (details.id == null || details.id.isEmpty()) {
+                details.id = defaultChannelId;
+            } else {
+                editor.putString(CHANNEL_ID, details.id).apply();
+            }
+            if (details.name == null || details.name.isEmpty()) {
+                details.name = defaultChannelName;
+            } else {
+                editor.putString(CHANNEL_NAME, details.name).apply();
+            }
+            // End - Controls to check if info are missing from Flutter side
             NotificationChannel notificationChannel = new NotificationChannel(
                     notificationChannelDetails.id,
                     notificationChannelDetails.name,
