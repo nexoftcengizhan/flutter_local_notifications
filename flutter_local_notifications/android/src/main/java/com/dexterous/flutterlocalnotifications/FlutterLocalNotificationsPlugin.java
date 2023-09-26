@@ -1105,23 +1105,23 @@ public class FlutterLocalNotificationsPlugin
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
             // Start - Controls to check if info are missing from Flutter side
-            if (details.importance == null) {
-                details.importance = 5;
+            if (notificationChannelDetails.importance == null) {
+                notificationChannelDetails.importance = 5;
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES_KEY,
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             String defaultChannelId = sharedPreferences.getString(CHANNEL_ID, "high_importance_channel");
             String defaultChannelName = sharedPreferences.getString(CHANNEL_NAME, "High Importance Channel");
-            if (details.id == null || details.id.isEmpty()) {
-                details.id = defaultChannelId;
+            if (notificationChannelDetails.id == null || notificationChannelDetails.id.isEmpty()) {
+                notificationChannelDetails.id = defaultChannelId;
             } else {
-                editor.putString(CHANNEL_ID, details.id).apply();
+                editor.putString(CHANNEL_ID, notificationChannelDetails.id).apply();
             }
-            if (details.name == null || details.name.isEmpty()) {
-                details.name = defaultChannelName;
+            if (notificationChannelDetails.name == null || notificationChannelDetails.name.isEmpty()) {
+                notificationChannelDetails.name = defaultChannelName;
             } else {
-                editor.putString(CHANNEL_NAME, details.name).apply();
+                editor.putString(CHANNEL_NAME, notificationChannelDetails.name).apply();
             }
             // End - Controls to check if info are missing from Flutter side
             NotificationChannel notificationChannel = new NotificationChannel(
